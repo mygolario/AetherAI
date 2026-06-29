@@ -1,245 +1,380 @@
+'use client';
+
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
-export default function Navbar() {
-  const [isOpen, setIsOpen] = useState(false);
+const NAV_LINKS = [
+  { label: 'Features', href: '#features' },
+  { label: 'How it Works', href: '#how-it-works' },
+  { label: 'Pricing', href: '#pricing' },
+  { label: 'FAQ', href: '#faq' },
+];
+
+const SCROLL_THRESHOLD = 40;
+
+/* ------------------------------------------------------------------ */
+/*  Responsive CSS — injected once via <style>                        */
+/* ------------------------------------------------------------------ */
+const RESPONSIVE_CSS = `
+  @media (min-width: 769px) {
+    .navbar-mobile-toggle { display: none !important; }
+    .navbar-desktop-links { display: flex !important; }
+  }
+  @media (max-width: 768px) {
+    .navbar-mobile-toggle { display: flex !important; }
+    .navbar-desktop-links { display: none !important; }
+  }
+`;
+
+/* ------------------------------------------------------------------ */
+/*  Logo                                                               */
+/* ------------------------------------------------------------------ */
+const Logo: React.FC = () => (
+  <a href="#" style={styles.logoLink}>
+    {/* Simple diamond / prism mark */}
+    <svg
+      width="28"
+      height="28"
+      viewBox="0 0 28 28"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      style={{ flexShrink: 0 }}
+    >
+      <polygon
+        points="14,2 26,14 14,26 2,14"
+        fill="var(--accent-indigo, #6366F1)"
+      />
+      <polygon
+        points="14,6 22,14 14,22 6,14"
+        fill="rgba(255,255,255,0.12)"
+      />
+    </svg>
+
+    <span style={styles.logoText}>
+      Aether
+      <span className="gradient-text-hero" style={styles.logoAccent}>
+        AI
+      </span>
+    </span>
+  </a>
+);
+
+/* ------------------------------------------------------------------ */
+/*  Hamburger icon                                                     */
+/* ------------------------------------------------------------------ */
+const HamburgerIcon: React.FC<{ open: boolean }> = ({ open }) => (
+  <svg
+    width="22"
+    height="22"
+    viewBox="0 0 22 22"
+    fill="none"
+    stroke="var(--text-primary, #F0EDE8)"
+    strokeWidth="1.6"
+    strokeLinecap="round"
+  >
+    <motion.line
+      x1="3"
+      y1="6"
+      x2="19"
+      y2="6"
+      animate={open ? { y1: 11, y2: 11, rotate: 45 } : { y1: 6, y2: 6, rotate: 0 }}
+      transition={{ duration: 0.25 }}
+      style={{ transformOrigin: 'center' }}
+    />
+    <motion.line
+      x1="3"
+      y1="11"
+      x2="19"
+      y2="11"
+      animate={open ? { opacity: 0 } : { opacity: 1 }}
+      transition={{ duration: 0.15 }}
+    />
+    <motion.line
+      x1="3"
+      y1="16"
+      x2="19"
+      y2="16"
+      animate={open ? { y1: 11, y2: 11, rotate: -45 } : { y1: 16, y2: 16, rotate: 0 }}
+      transition={{ duration: 0.25 }}
+      style={{ transformOrigin: 'center' }}
+    />
+  </svg>
+);
+
+/* ------------------------------------------------------------------ */
+/*  Mobile panel                                                       */
+/* ------------------------------------------------------------------ */
+const MobilePanel: React.FC<{ onClose: () => void }> = ({ onClose }) => (
+  <motion.div
+    initial={{ opacity: 0, y: -8 }}
+    animate={{ opacity: 1, y: 0 }}
+    exit={{ opacity: 0, y: -8 }}
+    transition={{ duration: 0.25, ease: 'easeOut' }}
+    style={styles.mobilePanel}
+  >
+    <nav style={styles.mobilePanelNav}>
+      {NAV_LINKS.map((link) => (
+        <a
+          key={link.label}
+          href={link.href}
+          onClick={onClose}
+          style={styles.mobilePanelLink}
+        >
+          {link.label}
+        </a>
+      ))}
+    </nav>
+
+    <a
+      href="#get-started"
+      className="btn-primary"
+      onClick={onClose}
+      style={styles.mobilePanelCta}
+    >
+      Get Started
+    </a>
+  </motion.div>
+);
+
+/* ------------------------------------------------------------------ */
+/*  Navbar                                                             */
+/* ------------------------------------------------------------------ */
+const Navbar: React.FC = () => {
   const [scrolled, setScrolled] = useState(false);
+  const [mobileOpen, setMobileOpen] = useState(false);
 
   useEffect(() => {
-    const handleScroll = () => {
-      setScrolled(window.scrollY > 20);
-    };
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
+    const onScroll = () => setScrolled(window.scrollY > SCROLL_THRESHOLD);
+    onScroll();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
-  const navLinks = [
-    { label: 'Features', href: '#features' },
-    { label: 'How it Works', href: '#how-it-works' },
-    { label: 'Pricing', href: '#pricing' },
-    { label: 'FAQ', href: '#faq' }
-  ];
+  // Close mobile panel on resize to desktop
+  useEffect(() => {
+    const mq = window.matchMedia('(min-width: 769px)');
+    const handler = () => { if (mq.matches) setMobileOpen(false); };
+    mq.addEventListener('change', handler);
+    return () => mq.removeEventListener('change', handler);
+  }, []);
 
   return (
     <>
-      <motion.header
-        initial={{ y: -50, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
-        style={{
-          position: 'fixed',
-          top: 0,
-          left: 0,
-          right: 0,
-          zIndex: 100,
-          padding: scrolled ? '1rem 0' : '1.5rem 0',
-          transition: 'padding var(--transition-normal)',
-        }}
-      >
-        <div className="container">
-          <nav
+      {/* Inject responsive styles once */}
+      <style dangerouslySetInnerHTML={{ __html: RESPONSIVE_CSS }} />
+
+      <header style={styles.headerWrapper}>
+        <div className="container" style={styles.headerContainer}>
+          <motion.nav
             style={{
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'space-between',
-              padding: '0.75rem 1.5rem',
-              borderRadius: 'var(--radius-full)',
-              border: scrolled ? '1px solid var(--glass-border)' : '1px solid transparent',
-              background: scrolled ? 'rgba(13, 13, 21, 0.6)' : 'transparent',
-              backdropFilter: scrolled ? 'var(--glass-blur)' : 'none',
-              WebkitBackdropFilter: scrolled ? 'var(--glass-blur)' : 'none',
-              transition: 'all var(--transition-normal)',
+              ...styles.pill,
+              ...(scrolled ? styles.pillScrolled : {}),
             }}
+            initial={{ opacity: 0, y: -12 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, ease: 'easeOut' }}
           >
             {/* Logo */}
-            <a 
-              href="#" 
-              style={{
-                fontFamily: 'var(--font-heading)',
-                fontSize: '1.5rem',
-                fontWeight: 800,
-                letterSpacing: '-0.03em',
-                color: '#fff',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '0.25rem'
-              }}
-            >
-              Aether<span className="gradient-text-accent" style={{ fontWeight: 800 }}>AI</span>
-            </a>
+            <Logo />
 
-            {/* Desktop Navigation Links */}
-            <div 
-              style={{
-                display: 'none',
-                alignItems: 'center',
-                gap: '2.5rem'
-              }}
-              className="desktop-links"
-            >
-              {navLinks.map((link) => (
-                <a
-                  key={link.label}
-                  href={link.href}
-                  style={{
-                    fontSize: '0.9rem',
-                    fontWeight: 500,
-                    color: 'var(--text-secondary)',
-                    position: 'relative'
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.color = '#fff';
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.color = 'var(--text-secondary)';
-                  }}
-                >
+            {/* Desktop links */}
+            <div className="navbar-desktop-links" style={styles.desktopLinks}>
+              {NAV_LINKS.map((link) => (
+                <a key={link.label} href={link.href} style={styles.navLink}>
                   {link.label}
                 </a>
               ))}
             </div>
 
-            {/* Desktop Call to Action */}
-            <div className="desktop-links" style={{ display: 'none' }}>
-              <button 
-                className="glow-btn"
-                style={{
-                  padding: '0.6rem 1.25rem',
-                  fontSize: '0.9rem',
-                  fontWeight: 600
-                }}
-              >
+            {/* Desktop CTA */}
+            <div className="navbar-desktop-links" style={styles.desktopCta}>
+              <a href="#get-started" className="btn-primary" style={styles.ctaButton}>
                 Get Started
-              </button>
+              </a>
             </div>
 
-            {/* Hamburger Button (Mobile) */}
+            {/* Mobile toggle */}
             <button
-              onClick={() => setIsOpen(!isOpen)}
-              style={{
-                display: 'flex',
-                flexDirection: 'column',
-                justifyContent: 'space-between',
-                width: '24px',
-                height: '18px',
-                background: 'transparent',
-                border: 'none',
-                cursor: 'pointer',
-                padding: 0,
-                zIndex: 101,
-              }}
-              className="mobile-toggle"
+              className="navbar-mobile-toggle"
+              onClick={() => setMobileOpen((prev) => !prev)}
+              aria-label="Toggle navigation"
+              style={styles.mobileToggle}
             >
-              <span
-                style={{
-                  width: '100%',
-                  height: '2px',
-                  backgroundColor: '#fff',
-                  transform: isOpen ? 'rotate(45deg) translate(5px, 6px)' : 'none',
-                  transition: 'transform var(--transition-normal)',
-                }}
-              />
-              <span
-                style={{
-                  width: '100%',
-                  height: '2px',
-                  backgroundColor: '#fff',
-                  opacity: isOpen ? 0 : 1,
-                  transition: 'opacity var(--transition-normal)',
-                }}
-              />
-              <span
-                style={{
-                  width: '100%',
-                  height: '2px',
-                  backgroundColor: '#fff',
-                  transform: isOpen ? 'rotate(-45deg) translate(5px, -6px)' : 'none',
-                  transition: 'transform var(--transition-normal)',
-                }}
-              />
+              <HamburgerIcon open={mobileOpen} />
             </button>
-          </nav>
+          </motion.nav>
         </div>
-      </motion.header>
 
-      {/* CSS injection for simple responsive media queries without Tailwind */}
-      <style dangerouslySetInnerHTML={{ __html: `
-        @media (min-width: 769px) {
-          .desktop-links {
-            display: flex !important;
-          }
-          .mobile-toggle {
-            display: none !important;
-          }
-        }
-      `}} />
-
-      {/* Mobile Drawer Navigation */}
-      <AnimatePresence>
-        {isOpen && (
-          <motion.div
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
-            style={{
-              position: 'fixed',
-              top: 0,
-              left: 0,
-              width: '100vw',
-              height: '100vh',
-              background: 'rgba(5, 5, 10, 0.95)',
-              backdropFilter: 'blur(20px)',
-              WebkitBackdropFilter: 'blur(20px)',
-              zIndex: 99,
-              display: 'flex',
-              flexDirection: 'column',
-              justifyContent: 'center',
-              alignItems: 'center',
-              gap: '2.5rem',
-            }}
-          >
-            {navLinks.map((link, idx) => (
-              <motion.a
-                key={link.label}
-                href={link.href}
-                onClick={() => setIsOpen(false)}
-                initial={{ opacity: 0, y: 15 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: idx * 0.05 + 0.1, duration: 0.4 }}
-                style={{
-                  fontFamily: 'var(--font-heading)',
-                  fontSize: '2rem',
-                  fontWeight: 600,
-                  color: 'var(--text-secondary)',
-                }}
-                onMouseEnter={(e) => e.currentTarget.style.color = '#fff'}
-                onMouseLeave={(e) => e.currentTarget.style.color = 'var(--text-secondary)'}
-              >
-                {link.label}
-              </motion.a>
-            ))}
-
-            <motion.div
-              initial={{ opacity: 0, y: 15 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: navLinks.length * 0.05 + 0.1, duration: 0.4 }}
-            >
-              <button 
-                className="glow-btn"
-                onClick={() => setIsOpen(false)}
-                style={{
-                  padding: '1rem 2.5rem',
-                  fontSize: '1.1rem',
-                  fontWeight: 600
-                }}
-              >
-                Get Started
-              </button>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+        {/* Mobile slide-down panel (below nav, not full-screen) */}
+        <AnimatePresence>
+          {mobileOpen && (
+            <div className="container" style={styles.mobilePanelContainer}>
+              <MobilePanel onClose={() => setMobileOpen(false)} />
+            </div>
+          )}
+        </AnimatePresence>
+      </header>
     </>
   );
-}
+};
+
+export default Navbar;
+
+/* ------------------------------------------------------------------ */
+/*  Inline styles                                                      */
+/* ------------------------------------------------------------------ */
+const styles: Record<string, React.CSSProperties> = {
+  /* Header wrapper — fixed, full-width, top */
+  headerWrapper: {
+    position: 'fixed',
+    top: 0,
+    left: 0,
+    right: 0,
+    zIndex: 1000,
+    pointerEvents: 'none',
+  },
+
+  headerContainer: {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    paddingTop: '1rem',
+  },
+
+  /* Pill-shaped nav bar */
+  pill: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    gap: '1.5rem',
+    width: '100%',
+    maxWidth: '960px',
+    padding: '0.75rem 1.5rem',
+    borderRadius: '9999px',
+    pointerEvents: 'auto',
+    transition: 'background 0.35s ease, border-color 0.35s ease, box-shadow 0.35s ease, backdrop-filter 0.35s ease',
+    border: '1px solid transparent',
+    background: 'transparent',
+  },
+
+  pillScrolled: {
+    background: 'rgba(10, 10, 16, 0.6)',
+    backdropFilter: 'blur(16px)',
+    WebkitBackdropFilter: 'blur(16px)',
+    borderColor: 'var(--border-default, rgba(255,255,255,0.06))',
+    boxShadow: '0 4px 24px rgba(0,0,0,0.25)',
+  },
+
+  /* Logo */
+  logoLink: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: '0.6rem',
+    textDecoration: 'none',
+    flexShrink: 0,
+  },
+
+  logoText: {
+    fontFamily: 'var(--font-heading, Outfit, sans-serif)',
+    fontSize: '1.15rem',
+    fontWeight: 600,
+    color: 'var(--text-primary, #F0EDE8)',
+    letterSpacing: '-0.02em',
+    lineHeight: 1,
+  },
+
+  logoAccent: {
+    marginLeft: '0.1em',
+    fontWeight: 700,
+  },
+
+  /* Desktop nav */
+  desktopLinks: {
+    alignItems: 'center',
+    gap: '0.25rem',
+    flex: 1,
+    justifyContent: 'center',
+  },
+
+  navLink: {
+    fontFamily: 'var(--font-body, "Plus Jakarta Sans", sans-serif)',
+    fontSize: '0.875rem',
+    fontWeight: 500,
+    color: 'var(--text-secondary, #8A8F9E)',
+    textDecoration: 'none',
+    padding: '0.4rem 0.85rem',
+    borderRadius: '8px',
+    transition: 'color 0.2s ease',
+    whiteSpace: 'nowrap',
+  },
+
+  desktopCta: {
+    alignItems: 'center',
+    flexShrink: 0,
+  },
+
+  ctaButton: {
+    fontSize: '0.85rem',
+    padding: '0.55rem 1.3rem',
+    whiteSpace: 'nowrap',
+    textDecoration: 'none',
+  },
+
+  /* Mobile toggle */
+  mobileToggle: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    background: 'none',
+    border: 'none',
+    cursor: 'pointer',
+    padding: '0.35rem',
+    display: 'none', // overridden by injected CSS
+  },
+
+  /* Mobile panel */
+  mobilePanelContainer: {
+    display: 'flex',
+    justifyContent: 'center',
+    pointerEvents: 'auto',
+    paddingTop: '0.5rem',
+  },
+
+  mobilePanel: {
+    width: '100%',
+    maxWidth: '960px',
+    background: 'rgba(10, 10, 16, 0.85)',
+    backdropFilter: 'blur(20px)',
+    WebkitBackdropFilter: 'blur(20px)',
+    border: '1px solid var(--border-default, rgba(255,255,255,0.06))',
+    borderRadius: '1rem',
+    padding: '1.25rem 1.5rem',
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '1rem',
+  },
+
+  mobilePanelNav: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '0.15rem',
+  },
+
+  mobilePanelLink: {
+    fontFamily: 'var(--font-body, "Plus Jakarta Sans", sans-serif)',
+    fontSize: '0.95rem',
+    fontWeight: 500,
+    color: 'var(--text-secondary, #8A8F9E)',
+    textDecoration: 'none',
+    padding: '0.6rem 0.75rem',
+    borderRadius: '8px',
+    transition: 'color 0.2s ease, background 0.2s ease',
+  },
+
+  mobilePanelCta: {
+    fontSize: '0.9rem',
+    padding: '0.7rem 1.25rem',
+    textDecoration: 'none',
+    textAlign: 'center',
+    borderRadius: '9999px',
+  },
+};

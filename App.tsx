@@ -4,9 +4,8 @@ import Hero from './components/Hero';
 import Marquee from './components/Marquee';
 import BentoFeatures from './components/BentoFeatures';
 import HowItWorks from './components/HowItWorks';
-import PerformanceStats from './components/PerformanceStats';
-import Pricing from './components/Pricing';
 import Testimonials from './components/Testimonials';
+import Pricing from './components/Pricing';
 import FAQ from './components/FAQ';
 import FooterCTA from './components/FooterCTA';
 import Footer from './components/Footer';
@@ -20,9 +19,8 @@ export default function App() {
         <Marquee />
         <BentoFeatures />
         <HowItWorks />
-        <PerformanceStats />
-        <Pricing />
         <Testimonials />
+        <Pricing />
         <FAQ />
         <FooterCTA />
       </main>

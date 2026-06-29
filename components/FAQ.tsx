@@ -1,197 +1,171 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
-const faqData = [
+interface FAQItem {
+  question: string;
+  answer: string;
+}
+
+const faqItems: FAQItem[] = [
   {
     question: 'How does AetherAI handle data privacy?',
-    answer: 'We employ end-to-end encryption for all data integrations. Your datasets never leave your secure regional node environments, and we strictly follow zero-retention guidelines. Your proprietary data is never used to train or refine public model layers.'
+    answer:
+      'All data is encrypted at rest and in transit with AES-256. We maintain SOC 2 Type II certification and are fully GDPR compliant. Your data is never used for model training without explicit consent.',
   },
   {
-    question: 'Can I fine-tune models on my own dataset?',
-    answer: 'Yes, absolutely. The platform supports declarative fine-tuning pipelines. You can upload custom JSON, CSV, or raw markdown documentation to fine-tune cognitive weights on top of our base model architectures directly in the developer dashboard.'
+    question: 'Can I fine-tune models on my own data?',
+    answer:
+      'Yes. You can upload custom datasets through the dashboard or via API. We support configurable hyperparameters including learning rate, epochs, and batch size for full control over the fine-tuning process.',
   },
   {
-    question: 'What languages does the SDK support?',
-    answer: 'Our core developer SDK is fully typed and supports TypeScript/JavaScript (Node.js), Python, Go, and Rust. We also provide direct HTTP API access endpoints for custom system integrations.'
+    question: 'What SDK languages are supported?',
+    answer:
+      'We offer first-party SDKs for Python, TypeScript/Node.js, Go, and Rust. For all other languages, our fully-documented REST API provides complete platform access.',
   },
   {
-    question: 'Is there a free tier available?',
-    answer: 'Yes. Our Starter plan is 100% free forever and requires no credit card. It includes one active cognitive agent, 50,000 generation tokens per month, and full access to our web-based terminal interface for evaluation.'
+    question: 'Is there a free tier?',
+    answer:
+      'Yes. The Starter plan is completely free and includes 1 agent, 50K tokens per month, and full dashboard access. No credit card required to get started.',
   },
   {
-    question: 'How does edge deployment work?',
-    answer: 'When you click deploy, our compiler builds your custom agent logic into highly optimized WebAssembly (Wasm) container instances. These are instantly replicated across regional edge routers, executing queries close to your users.'
+    question: 'Do you support edge deployment?',
+    answer:
+      'Yes. Deploy to 143 edge locations globally with a single click. Our infrastructure handles auto-scaling and maintains zero cold starts across all regions.',
   },
   {
-    question: 'What is the average response latency?',
-    answer: 'General metadata routing and edge decisions average around 15ms. Heavy LLM-based inference requests average 120ms to 200ms depending on prompt size, utilizing token streaming to optimize visual performance.'
+    question: 'What is the average API latency?',
+    answer:
+      'Our global average latency is 15ms, with sub-50ms P99 performance. Pro and Enterprise plans include priority routing for consistently lower latency under load.',
   },
   {
     question: 'Can I use AetherAI for real-time applications?',
-    answer: 'Yes. The system is designed from the ground up for low-latency interactions. We support persistent WebSocket connections out of the box, making it ideal for live chatbot networks and streaming data processors.'
+    answer:
+      'Absolutely. We support WebSocket streaming with sub-100ms response times, making AetherAI suitable for chat interfaces, live dashboards, and interactive agents.',
   },
   {
-    question: 'How do I upgrade or cancel my plan?',
-    answer: 'You can scale up, add concurrent token limits, or cancel your active subscription plan in one click directly inside the billing settings page of your account. Downgrades take effect at the end of the current billing cycle.'
-  }
+    question: 'How do I change my plan?',
+    answer:
+      'You can upgrade or downgrade anytime directly from your dashboard. Plan changes take effect immediately, with billing prorated for the current cycle.',
+  },
 ];
 
 export default function FAQ() {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
 
-  const toggleFAQ = (index: number) => {
+  const toggle = (index: number) => {
     setOpenIndex(openIndex === index ? null : index);
   };
 
   return (
-    <section 
-      id="faq"
-      style={{
-        background: 'var(--bg-primary)',
-        position: 'relative',
-        zIndex: 5,
-        width: '100%',
-        overflow: 'hidden',
-      }}
-      className="section-padding"
-    >
-      <div className="container">
-        
-        {/* Section Heading */}
-        <div style={{ textAlign: 'center', marginBottom: '4rem' }}>
-          <span
-            style={{
-              fontFamily: 'var(--font-heading)',
-              fontSize: '0.85rem',
-              fontWeight: 600,
-              color: 'var(--accent-indigo)',
-              letterSpacing: '0.15em',
-              textTransform: 'uppercase',
-              display: 'block',
-              marginBottom: '1rem',
-            }}
-          >
-            Support
-          </span>
+    <section id="faq" className="section-padding">
+      <div
+        className="container"
+        style={{ maxWidth: '680px', margin: '0 auto' }}
+      >
+        {/* Header */}
+        <div style={{ textAlign: 'center', marginBottom: '3.5rem' }}>
+          <span className="eyebrow">FAQ</span>
           <h2
-            className="gradient-text"
-            style={{
-              fontSize: 'clamp(2rem, 4vw, 3rem)',
-              fontWeight: 800,
-              letterSpacing: '-0.02em',
-              maxWidth: '600px',
-              margin: '0 auto',
-            }}
+            className="display-heading gradient-text-subtle"
+            style={{ marginTop: '0.75rem' }}
           >
-            Frequently Asked Questions
+            Common questions.
           </h2>
         </div>
 
-        {/* Accordion Container (constrained width) */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-          style={{
-            maxWidth: '750px',
-            margin: '0 auto',
-            display: 'flex',
-            flexDirection: 'column',
-            gap: '1rem'
-          }}
-        >
-          {faqData.map((item, idx) => {
-            const isOpen = openIndex === idx;
+        {/* Accordion */}
+        <div>
+          {faqItems.map((item, index) => {
+            const isOpen = openIndex === index;
             return (
-              <div 
-                key={idx}
+              <div
+                key={index}
                 style={{
-                  borderBottom: '1px solid var(--glass-border)',
-                  borderRadius: 'var(--radius-md)',
-                  background: isOpen ? 'var(--glass-bg-hover)' : 'transparent',
-                  borderLeft: isOpen ? '2px solid var(--accent-indigo)' : '2px solid transparent',
-                  padding: '0.5rem 1rem',
-                  overflow: 'hidden',
-                  transition: 'background-color var(--transition-normal), border-left-color var(--transition-normal)'
+                  borderBottom: '1px solid var(--border-subtle)',
                 }}
               >
-                {/* Accordion Trigger Head */}
-                <button
-                  onClick={() => toggleFAQ(idx)}
+                <div
                   style={{
-                    width: '100%',
-                    display: 'flex',
-                    justifyContent: 'space-between',
-                    alignItems: 'center',
-                    padding: '1.25rem 0',
-                    border: 'none',
-                    background: 'transparent',
-                    cursor: 'pointer',
-                    textAlign: 'left'
+                    borderLeft: isOpen
+                      ? '2px solid var(--accent-indigo)'
+                      : '2px solid transparent',
+                    paddingLeft: isOpen ? '1rem' : '1rem',
+                    transition: 'border-color 0.2s',
                   }}
                 >
-                  <span
+                  <button
+                    onClick={() => toggle(index)}
                     style={{
-                      fontFamily: 'var(--font-heading)',
-                      fontSize: '1.1rem',
-                      fontWeight: 600,
-                      color: isOpen ? '#fff' : 'var(--text-secondary)',
-                      transition: 'color var(--transition-fast)',
-                      paddingRight: '1rem'
-                    }}
-                  >
-                    {item.question}
-                  </span>
-
-                  {/* Rotate Plus/Minus Icon */}
-                  <motion.div
-                    animate={{ rotate: isOpen ? 45 : 0 }}
-                    transition={{ duration: 0.3, ease: 'easeInOut' }}
-                    style={{
-                      flexShrink: 0,
+                      width: '100%',
                       display: 'flex',
+                      flexDirection: 'row',
+                      justifyContent: 'space-between',
                       alignItems: 'center',
-                      justifyContent: 'center',
-                      color: isOpen ? 'var(--accent-cyan)' : 'var(--text-muted)'
+                      background: 'transparent',
+                      border: 'none',
+                      cursor: 'pointer',
+                      padding: '1.25rem 0',
+                      textAlign: 'left',
                     }}
                   >
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                      <line x1="12" y1="5" x2="12" y2="19" />
-                      <line x1="5" y1="12" x2="19" y2="12" />
-                    </svg>
-                  </motion.div>
-                </button>
-
-                {/* Accordion Expand Body */}
-                <AnimatePresence initial={false}>
-                  {isOpen && (
-                    <motion.div
-                      initial={{ height: 0, opacity: 0 }}
-                      animate={{ height: 'auto', opacity: 1 }}
-                      exit={{ height: 0, opacity: 0 }}
-                      transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
-                      style={{ overflow: 'hidden' }}
+                    <span
+                      style={{
+                        fontFamily: 'var(--font-heading)',
+                        fontSize: '0.95rem',
+                        fontWeight: 500,
+                        color: 'var(--text-primary)',
+                        paddingRight: '1rem',
+                      }}
                     >
-                      <div
-                        style={{
-                          paddingBottom: '1.5rem',
-                          paddingTop: '0.25rem',
-                          fontSize: '0.95rem',
-                          lineHeight: 1.6,
-                          color: 'var(--text-secondary)'
-                        }}
+                      {item.question}
+                    </span>
+                    <motion.svg
+                      width="16"
+                      height="16"
+                      viewBox="0 0 16 16"
+                      fill="none"
+                      style={{ flexShrink: 0 }}
+                      animate={{ rotate: isOpen ? 90 : 0 }}
+                      transition={{ duration: 0.2 }}
+                    >
+                      <path
+                        d="M6 3L11 8L6 13"
+                        stroke="var(--text-muted)"
+                        strokeWidth="1.5"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                    </motion.svg>
+                  </button>
+
+                  <AnimatePresence initial={false}>
+                    {isOpen && (
+                      <motion.div
+                        initial={{ height: 0, opacity: 0 }}
+                        animate={{ height: 'auto', opacity: 1 }}
+                        exit={{ height: 0, opacity: 0 }}
+                        transition={{ duration: 0.25, ease: 'easeInOut' }}
+                        style={{ overflow: 'hidden' }}
                       >
-                        {item.answer}
-                      </div>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
+                        <p
+                          style={{
+                            color: 'var(--text-secondary)',
+                            fontSize: '0.9rem',
+                            lineHeight: 1.7,
+                            margin: 0,
+                            padding: '0 0 1.25rem 0',
+                          }}
+                        >
+                          {item.answer}
+                        </p>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </div>
               </div>
             );
           })}
-        </motion.div>
-
+        </div>
       </div>
     </section>
   );
