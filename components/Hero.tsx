@@ -7,14 +7,14 @@ export default function Hero() {
     visible: {
       opacity: 1,
       transition: {
-        staggerChildren: 0.15,
-        delayChildren: 0.2,
+        staggerChildren: 0.1,
+        delayChildren: 0.1,
       },
     },
   };
 
   const itemVariants = {
-    hidden: { y: 30, opacity: 0 },
+    hidden: { y: 25, opacity: 0 },
     visible: {
       y: 0,
       opacity: 1,
@@ -34,7 +34,7 @@ export default function Hero() {
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        padding: '8rem 0 6rem 0',
+        padding: '9rem 0 7rem 0',
         overflow: 'hidden',
         background: 'var(--bg-primary)',
       }}
@@ -53,47 +53,68 @@ export default function Hero() {
           height: '100%',
           objectFit: 'cover',
           zIndex: 1,
-          opacity: 0.45,
+          opacity: 0.22,
         }}
       >
-        <source src="/AI-Generated-Videos/watermark-removed-Deep_space_particle_drift_202606291342.mp4" type="video/mp4" />
+        <source src="/videos/space_bg.mp4" type="video/mp4" />
       </video>
 
-      {/* Dark Overlay gradient for legibility */}
+      {/* Mesh Glow Background underlay */}
       <div
         style={{
           position: 'absolute',
-          top: 0,
-          left: 0,
-          right: 0,
-          bottom: 0,
-          background: 'linear-gradient(to bottom, rgba(5,5,10,0.6) 0%, var(--bg-primary) 90%)',
+          top: '5%',
+          left: '50%',
+          transform: 'translateX(-50%)',
+          width: '100%',
+          maxWidth: '1440px',
+          height: '80%',
+          backgroundImage: 'url(/images/bg_mesh.jpg)',
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          opacity: 0.28,
+          filter: 'blur(80px)',
           zIndex: 2,
           pointerEvents: 'none',
         }}
       />
 
-      {/* Ambient Glows */}
+      {/* Overlay mask for perfect contrast */}
+      <div
+        style={{
+          position: 'absolute',
+          inset: 0,
+          background: 'linear-gradient(to bottom, rgba(2, 2, 5, 0.5) 0%, var(--bg-primary) 85%)',
+          zIndex: 3,
+          pointerEvents: 'none',
+        }}
+      />
+
+      {/* Static Glow Overlays */}
       <div 
         className="glow-overlay" 
         style={{ 
-          top: '-10%', 
-          left: '-10%', 
-          background: 'radial-gradient(circle, rgba(99, 102, 241, 0.2) 0%, transparent 70%)',
-          zIndex: 2 
+          top: '5%', 
+          left: '10%', 
+          width: '500px',
+          height: '500px',
+          background: 'radial-gradient(circle, rgba(99, 102, 241, 0.12) 0%, transparent 70%)',
+          zIndex: 3 
         }} 
       />
       <div 
         className="glow-overlay" 
         style={{ 
-          bottom: '-10%', 
-          right: '-10%', 
-          background: 'radial-gradient(circle, rgba(6, 182, 212, 0.15) 0%, transparent 70%)',
-          zIndex: 2 
+          bottom: '10%', 
+          right: '5%', 
+          width: '600px',
+          height: '600px',
+          background: 'radial-gradient(circle, rgba(6, 182, 212, 0.08) 0%, transparent 70%)',
+          zIndex: 3 
         }} 
       />
 
-      <div className="container" style={{ position: 'relative', zIndex: 3 }}>
+      <div className="container" style={{ position: 'relative', zIndex: 4 }}>
         <motion.div
           variants={containerVariants}
           initial="hidden"
@@ -106,28 +127,13 @@ export default function Hero() {
             width: '100%',
           }}
         >
-          {/* Tagline Badge */}
+          {/* Version badge */}
           <motion.div
             variants={itemVariants}
-            className="animate-pulse-border"
-            style={{
-              display: 'inline-flex',
-              alignItems: 'center',
-              padding: '0.5rem 1rem',
-              borderRadius: 'var(--radius-full)',
-              border: '1px solid var(--glass-border)',
-              background: 'rgba(13, 13, 21, 0.4)',
-              backdropFilter: 'var(--glass-blur)',
-              WebkitBackdropFilter: 'var(--glass-blur)',
-              fontSize: '0.85rem',
-              fontWeight: 600,
-              color: 'var(--text-primary)',
-              letterSpacing: '0.05em',
-              marginBottom: '2rem',
-              boxShadow: '0 0 15px rgba(99, 102, 241, 0.15)',
-            }}
+            className="premium-badge"
+            style={{ marginBottom: '1.75rem' }}
           >
-            v2.0 IS LIVE ⚡
+            v2.0 is Live ⚡
           </motion.div>
 
           {/* Heading */}
@@ -135,32 +141,33 @@ export default function Hero() {
             variants={itemVariants}
             className="gradient-text-accent"
             style={{
-              fontSize: 'clamp(2.5rem, 6vw, 4.5rem)',
+              fontSize: 'clamp(2.5rem, 6.5vw, 5rem)',
               fontWeight: 800,
-              letterSpacing: '-0.03em',
-              lineHeight: 1.1,
-              maxWidth: '850px',
+              letterSpacing: '-0.04em',
+              lineHeight: 1.05,
+              maxWidth: '920px',
               marginBottom: '1.5rem',
             }}
           >
-            Next-Generation AI Intelligence Platform
+            The Cognitive Execution Layer for Modern AI
           </motion.h1>
 
-          {/* Subheading */}
+          {/* Subtext */}
           <motion.p
             variants={itemVariants}
             style={{
-              fontSize: 'clamp(1rem, 2vw, 1.25rem)',
+              fontSize: 'clamp(1rem, 2vw, 1.2rem)',
               color: 'var(--text-secondary)',
-              maxWidth: '600px',
+              maxWidth: '620px',
               marginBottom: '3rem',
               lineHeight: 1.6,
+              fontWeight: 400,
             }}
           >
-            Automate workflows, build custom cognitive agents, and deploy secure models in seconds. Engineered for modern digital enterprises.
+            Instantly deploy, scale, and fine-tune autonomous software agents. Integrate with private database systems under enterprise-grade encryption.
           </motion.p>
 
-          {/* Call to Actions */}
+          {/* Buttons */}
           <motion.div
             variants={itemVariants}
             style={{
@@ -169,138 +176,133 @@ export default function Hero() {
               justifyContent: 'center',
               width: '100%',
               flexWrap: 'wrap',
-              marginBottom: '5rem',
+              marginBottom: '6rem',
             }}
           >
             <button
               className="glow-btn"
               style={{
-                padding: '0.9rem 2.25rem',
-                fontSize: '1rem',
-                fontWeight: 600,
+                padding: '0.9rem 2.5rem',
+                fontSize: '0.95rem',
               }}
             >
               Start Free Trial
             </button>
             <button
+              className="secondary-btn"
               style={{
-                padding: '0.9rem 2.25rem',
-                fontSize: '1rem',
-                fontWeight: 600,
-                borderRadius: 'var(--radius-full)',
-                border: '1px solid var(--glass-border)',
-                background: 'var(--glass-bg)',
-                backdropFilter: 'var(--glass-blur)',
-                WebkitBackdropFilter: 'var(--glass-blur)',
-                color: '#fff',
-                cursor: 'pointer',
-                transition: 'all var(--transition-fast)',
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.borderColor = 'var(--glass-border-hover)';
-                e.currentTarget.style.background = 'var(--glass-bg-hover)';
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.borderColor = 'var(--glass-border)';
-                e.currentTarget.style.background = 'var(--glass-bg)';
+                padding: '0.9rem 2.5rem',
+                fontSize: '0.95rem',
               }}
             >
               Watch Demo
             </button>
           </motion.div>
 
-          {/* Floating Glassmorphic 3D Dashboard Mockup */}
+          {/* Dashboard 3D Floating Mockup */}
           <motion.div
-            initial={{ opacity: 0, y: 50, scale: 0.95 }}
+            initial={{ opacity: 0, y: 40, scale: 0.96 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
-            transition={{ delay: 0.8, duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
+            transition={{ delay: 0.6, duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
             style={{
               position: 'relative',
               width: '100%',
-              maxWidth: '1000px',
-              perspective: '1200px',
-              zIndex: 3,
+              maxWidth: '1060px',
+              perspective: '1400px',
+              zIndex: 5,
             }}
           >
-            {/* Backlight Glow Ring */}
+            {/* Custom glowing back shadow */}
             <div
               style={{
                 position: 'absolute',
-                top: '10%',
-                left: '10%',
-                right: '10%',
-                bottom: '10%',
-                background: 'radial-gradient(circle, rgba(139, 92, 246, 0.25) 0%, rgba(6, 182, 212, 0.1) 50%, transparent 80%)',
-                filter: 'blur(50px)',
+                top: '15%',
+                left: '15%',
+                right: '15%',
+                bottom: '15%',
+                background: 'radial-gradient(circle, rgba(139, 92, 246, 0.35) 0%, rgba(6, 182, 212, 0.15) 50%, transparent 80%)',
+                filter: 'blur(60px)',
                 zIndex: 0,
                 pointerEvents: 'none',
               }}
             />
 
-            {/* The 3D Mockup Container */}
+            {/* Float Card */}
             <div
               className="glass-card animate-float"
               style={{
-                padding: '0.5rem',
-                borderRadius: 'var(--radius-lg)',
-                border: '1px solid var(--glass-border)',
-                transform: 'rotateX(10deg) rotateY(-8deg) rotateZ(1deg)',
+                padding: '1px',
+                background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.02) 100%)',
+                borderRadius: 'var(--radius-xl)',
+                transform: 'rotateX(12deg) rotateY(-8deg) rotateZ(1deg)',
                 transformStyle: 'preserve-3d',
-                boxShadow: '0 30px 60px -15px rgba(0, 0, 0, 0.8), 0 0 50px -10px rgba(99, 102, 241, 0.15)',
+                boxShadow: '0 40px 100px -20px rgba(0, 0, 0, 0.9), 0 0 80px -10px rgba(139, 92, 246, 0.2)',
                 overflow: 'hidden',
                 zIndex: 1,
               }}
             >
-              {/* Top Window Bar Decor */}
-              <div
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '6px',
-                  padding: '12px 16px',
-                  background: 'rgba(5, 5, 10, 0.4)',
-                  borderBottom: '1px solid rgba(255, 255, 255, 0.05)',
-                }}
-              >
-                <div style={{ width: '8px', height: '8px', borderRadius: '50%', backgroundColor: '#ef4444' }} />
-                <div style={{ width: '8px', height: '8px', borderRadius: '50%', backgroundColor: '#eab308' }} />
-                <div style={{ width: '8px', height: '8px', borderRadius: '50%', backgroundColor: '#22c55e' }} />
-                <div 
-                  style={{ 
-                    marginLeft: '24px', 
-                    fontSize: '0.75rem', 
-                    color: 'var(--text-muted)', 
-                    fontFamily: 'var(--font-body)',
-                    letterSpacing: '0.05em' 
-                  }}
-                >
-                  aetherai.app/workspace/dashboard
-                </div>
-              </div>
-
-              {/* Dashboard Inner Video Content */}
-              <div
-                style={{
-                  position: 'relative',
-                  width: '100%',
-                  aspectRatio: '16/9',
-                  background: '#05050A',
+              {/* Inner frame */}
+              <div 
+                style={{ 
+                  borderRadius: 'calc(var(--radius-xl) - 1px)', 
                   overflow: 'hidden',
+                  background: 'var(--bg-secondary)',
                 }}
               >
-                <video
-                  autoPlay
-                  loop
-                  muted
-                  playsInline
+                {/* Header decor */}
+                <div
                   style={{
-                    width: '100%',
-                    height: '100%',
-                    objectFit: 'cover',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    padding: '12px 20px',
+                    background: 'rgba(8, 8, 14, 0.6)',
+                    borderBottom: '1px solid rgba(255, 255, 255, 0.05)',
                   }}
                 >
-                  <source src="/AI-Generated-Videos/watermark-removed-Glassmorphic_UI_dashboard_floats._202606291348.mp4" type="video/mp4" />
-                </video>
+                  <div style={{ display: 'flex', gap: '6px' }}>
+                    <div style={{ width: '8px', height: '8px', borderRadius: '50%', backgroundColor: '#ef4444', opacity: 0.8 }} />
+                    <div style={{ width: '8px', height: '8px', borderRadius: '50%', backgroundColor: '#eab308', opacity: 0.8 }} />
+                    <div style={{ width: '8px', height: '8px', borderRadius: '50%', backgroundColor: '#22c55e', opacity: 0.8 }} />
+                  </div>
+                  <div 
+                    style={{ 
+                      fontSize: '0.75rem', 
+                      color: 'var(--text-muted)', 
+                      fontFamily: 'monospace',
+                    }}
+                  >
+                    workspace://aetherai.core/dashboard
+                  </div>
+                  <div style={{ width: '32px' }} /> {/* Spacer */}
+                </div>
+
+                {/* Video container */}
+                <div
+                  style={{
+                    position: 'relative',
+                    width: '100%',
+                    aspectRatio: '16/9',
+                    background: 'var(--bg-primary)',
+                    overflow: 'hidden',
+                  }}
+                >
+                  <video
+                    autoPlay
+                    loop
+                    muted
+                    playsInline
+                    poster="/images/hero_dashboard.jpg"
+                    style={{
+                      width: '100%',
+                      height: '100%',
+                      objectFit: 'cover',
+                      display: 'block',
+                    }}
+                  >
+                    <source src="/videos/dashboard.mp4" type="video/mp4" />
+                  </video>
+                </div>
               </div>
             </div>
           </motion.div>

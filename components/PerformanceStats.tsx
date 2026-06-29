@@ -19,7 +19,6 @@ function StatCounter({ value, suffix, decimals = 0, duration = 1.5 }) {
       if (!startTime) startTime = currentTime;
       const progress = Math.min((currentTime - startTime) / (duration * 1000), 1);
       
-      // Easing out quadratic function
       const easeOutQuad = progress * (2 - progress);
       const currentVal = easeOutQuad * (end - start) + start;
       
@@ -52,7 +51,7 @@ export default function PerformanceStats() {
         overflow: 'hidden',
         borderTop: '1px solid var(--glass-border)',
         borderBottom: '1px solid var(--glass-border)',
-        padding: '6rem 0',
+        padding: '7rem 0',
         zIndex: 5,
       }}
     >
@@ -69,12 +68,12 @@ export default function PerformanceStats() {
           width: '100%',
           height: '100%',
           objectFit: 'cover',
-          opacity: 0.18,
+          opacity: 0.12,
           zIndex: 0,
           pointerEvents: 'none',
         }}
       >
-        <source src="/AI-Generated-Videos/watermark-removed-Tunnel_of_glowing_data_streams_202606291355.mp4" type="video/mp4" />
+        <source src="/videos/stats_bg.mp4" type="video/mp4" />
       </video>
 
       {/* Dark overlay mask */}
@@ -85,7 +84,7 @@ export default function PerformanceStats() {
           left: 0,
           right: 0,
           bottom: 0,
-          background: 'linear-gradient(to right, var(--bg-primary) 0%, rgba(5,5,10,0.4) 50%, var(--bg-primary) 100%)',
+          background: 'linear-gradient(to right, var(--bg-primary) 0%, rgba(2,2,5,0.4) 50%, var(--bg-primary) 100%)',
           zIndex: 1,
           pointerEvents: 'none',
         }}
@@ -111,16 +110,15 @@ export default function PerformanceStats() {
 
           {/* Stat 2 with subtle glow behind it */}
           <div className="stat-column" style={{ position: 'relative' }}>
-            {/* Center column glow */}
             <div 
               style={{
                 position: 'absolute',
                 top: '50%',
                 left: '50%',
                 transform: 'translate(-50%, -50%)',
-                width: '180px',
-                height: '180px',
-                background: 'radial-gradient(circle, rgba(99, 102, 241, 0.15) 0%, transparent 70%)',
+                width: '200px',
+                height: '200px',
+                background: 'radial-gradient(circle, rgba(139, 92, 246, 0.12) 0%, transparent 70%)',
                 filter: 'blur(30px)',
                 zIndex: -1,
                 pointerEvents: 'none'
@@ -161,7 +159,7 @@ export default function PerformanceStats() {
         }
 
         .stat-number {
-          font-size: clamp(3.5rem, 8vw, 6rem);
+          font-size: clamp(3.5rem, 8vw, 5.5rem);
           font-weight: 800;
           letter-spacing: -0.04em;
           margin-bottom: 0.5rem;
@@ -170,7 +168,7 @@ export default function PerformanceStats() {
 
         .stat-label {
           font-family: var(--font-body);
-          font-size: 1rem;
+          font-size: 0.95rem;
           color: var(--text-secondary);
           font-weight: 500;
           max-width: 250px;
